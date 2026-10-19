@@ -2,31 +2,43 @@
 
 import { useState } from "react";
 
-const tickets = [
-  {
-    priority: "🔴",
-    title: "[INC-P2] Errore nella stampante ADR",
-    user: "Silvia Boncristiano",
-  },
-  {
-    priority: "🟡",
-    title: "[REQ-P3] VPN / Mobile Access",
-    user: "Maurizio Ferrari",
-  },
-  {
-    priority: "🔵",
-    title: "[SEC-P2] Possible Phishing Email",
-    user: "Andrea Alberga",
-  },
-  {
-    priority: "🟢",
-    title: "[ACC-P3] Accesso Cartella Marketing",
-    user: "Francesca Madè",
-  },
-];
-
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
+
+  const [tickets, setTickets] = useState([
+    {
+      priority: "🔴",
+      title: "[INC-P2] Errore nella stampante ADR",
+      user: "Silvia Boncristiano",
+    },
+    {
+      priority: "🟡",
+      title: "[REQ-P3] VPN / Mobile Access",
+      user: "Maurizio Ferrari",
+    },
+  ]);
+
+  const [title, setTitle] = useState("");
+  const [user, setUser] = useState("");
+  const [category, setCategory] = useState("Incident");
+
+  function createTicket() {
+    if (!title || !user) return;
+
+    const newTicket = {
+      priority: "🆕",
+      title: `[${category}] ${title}`,
+      user: user,
+    };
+
+    setTickets([newTicket, ...tickets]);
+
+    setTitle("");
+    setUser("");
+    setCategory("Incident");
+
+    setShowForm(false);
+  }
 
   return (
     <main className="min-h-screen bg-gray-950 text-white p-8">
@@ -35,7 +47,7 @@ export default function Home() {
       </h1>
 
       <p className="text-gray-400 mb-8">
-        Welcome Stagista 02
+        Welcome Mario
       </p>
 
       <button
@@ -54,30 +66,40 @@ export default function Home() {
           <input
             type="text"
             placeholder="Ticket Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full p-3 rounded bg-gray-800 mb-3"
           />
 
           <input
             type="text"
             placeholder="User Name"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
             className="w-full p-3 rounded bg-gray-800 mb-3"
           />
 
-          <select className="w-full p-3 rounded bg-gray-800 mb-3">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-3 rounded bg-gray-800 mb-3"
+          >
             <option>Incident</option>
             <option>Service Request</option>
             <option>Access</option>
             <option>Security</option>
           </select>
 
-          <textarea
-            placeholder="Description"
-            className="w-full p-3 rounded bg-gray-800"
-          />
+          <button
+            onClick={createTicket}
+            className="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700"
+          >
+            Create Ticket
+          </button>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 mb-10">
         <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
           <h2 className="text-xl font-semibold">📩 New Emails</h2>
           <p className="text-4xl mt-3">3</p>
@@ -90,7 +112,7 @@ export default function Home() {
 
         <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
           <h2 className="text-xl font-semibold">🎟 Open Tickets</h2>
-          <p className="text-4xl mt-3">7</p>
+          <p className="text-4xl mt-3">{tickets.length}</p>
         </div>
 
         <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
@@ -99,7 +121,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-10">
+      <div>
         <h2 className="text-2xl font-bold mb-4">
           Recent Tickets
         </h2>
